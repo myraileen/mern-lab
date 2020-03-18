@@ -8,7 +8,9 @@ router.get('/', (req, res) => {
   })	
 
 // GET USER BY ID
-router.get("/:id", (req, res) => {});
+router.get("/:id", (req, res) => {
+    User.findById(req.params.id).then(user => res.json(user))
+});
 
 // CREATE A USER
 router.post("/", (req, res) => {});
