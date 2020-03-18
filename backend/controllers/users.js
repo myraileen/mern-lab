@@ -13,7 +13,9 @@ router.get("/:id", (req, res) => {
 });
 
 // CREATE A USER
-router.post("/", (req, res) => {});
+router.post("/", (req, res) => {
+    User.create(req.body).then(newUser => res.json(newUser))
+});
 
 // UPDATE A USER
 router.put("/:id", (req, res) => {});
