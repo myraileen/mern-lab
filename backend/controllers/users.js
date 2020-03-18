@@ -3,9 +3,9 @@ const router = express.Router();
 const User = require("../models/User");
 
 // GET ALL USERS
-router.get("/", (req, res) => {
-  res.send("Users GET route is working!");
-});
+router.get('/', (req, res) => {
+    User.find().then(users => res.json(users))
+  })	
 
 // GET USER BY ID
 router.get("/:id", (req, res) => {});
