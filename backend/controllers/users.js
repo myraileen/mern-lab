@@ -18,7 +18,10 @@ router.post("/", (req, res) => {
 });
 
 // UPDATE A USER
-router.put("/:id", (req, res) => {});
+router.put("/:id", (req, res) => {
+    User.findByIdAndUpdate(req.params.id, req.body, {new: true})
+    .then(updatedUser => res.json(updatedUser))
+});
 
 // DELETE A USER
 router.delete("/:id", (req, res) => {});
