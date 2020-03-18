@@ -24,6 +24,8 @@ router.put("/:id", (req, res) => {
 });
 
 // DELETE A USER
-router.delete("/:id", (req, res) => {});
+router.delete("/:id", (req, res) => {
+    User.findByIdAndDelete(req.params.id).then(deletedUser => res.json(deletedUser))
+});
 
 module.exports = router;
