@@ -43,4 +43,19 @@ router.post("/:userId/new-todo/", (req, res) => {
   });
 });
 
+// TOGGLE THE DONE FIELD ON A TODO
+router.put("/:userId/update-todo/:todoId", (req, res) => {
+    User.findById(req.params.userId).then(user => {
+  
+      // FIND THE TODO INDEX
+      let todoIndex = user.todos.findIndex(todo => todo._id == req.params.todoId);
+  
+      // TOGGLE DONE
+      user.todos[todoIndex].done = !user.todos[todoIndex].done
+      user.save()
+  
+      res.json(user);
+    });
+  });
+
 module.exports = router;
