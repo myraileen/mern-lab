@@ -1,8 +1,14 @@
 import React from "react";
 import "./App.css";
-import User from "./User";
+
+import Users from "./Users";
+// import User from "./User";
+import UserDetail from "./UserDetail";
 import NewUserForm from "./NewUserForm";
+
 import axios from "axios";
+import { Route, Link, Redirect, Switch, withRouter } from "react-router-dom";
+
 const backendUrl = "http://localhost:8080/api/users/";
 
 class App extends React.Component {
@@ -60,28 +66,48 @@ class App extends React.Component {
 
   handleChange = event => {
     this.setState({
-      //need to add name property to form inputs
       [event.target.name]: event.target.value
     });
   };
 
   render() {
-    console.log(this.state);
-
-    let allUsers = this.state.users.map(user => {
-      return <User key={user._id} user={user} />;
-    });
-
     return (
       <div className='App'>
-        <NewUserForm
-          handleChange={this.handleChange}
-          handleSubmit={this.handleSubmit}
-        />
-        {allUsers}
+        <nav>
+          <Link to='/'>All Users</Link>
+          <Link to='/new-user-form'>New User Form</Link>
+        </nav>
+        <Switch>
+          <Route
+            exact
+            path='/'
+            render={routerProps => (
+              <Users
+                users={this.state.users}
+                handleDelete={this.deleteAxiosUser}
+              />
+            )}
+          />
+          <Route
+            path='/users/:id'
+            render={routerProps => (
+              <UserDetail {...routerProps} users={this.state.users} />
+            )}
+          />
+          <Route
+            path='/new-user-form'
+            render={() => (
+              <NewUserForm
+                handleChange={this.handleChange}
+                handleSubmit={this.handleSubmit}
+              />
+            )}
+          />
+          <Route path='/*' render={() => <Redirect to='/' />} />
+        </Switch>
       </div>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
