@@ -18,8 +18,9 @@ class App extends React.Component {
     this.state = {
       users: [],
       newUserName: "",
-      newUserEmail: ""
-    };
+      newUserEmail: "",
+      newTodoDescription: "" 
+    };	
   }
 
   componentDidMount() {
@@ -65,10 +66,45 @@ class App extends React.Component {
   };
 
   handleChange = event => {
+    console.log(event.target.value)
     this.setState({
       [event.target.name]: event.target.value
     });
   };
+
+  handleNewTodoSubmit = event => {
+    console.log(event.target.id)
+    event.preventDefault();
+    axios({
+      method: "POST",
+      url: `${backendUrl}${event.target.id}/new-todo/`,
+      data: {
+        description: this.state.newTodoDescription
+      }
+      //there is a more efficient way...
+    }).then(newUser => {
+      console.log(newUser)
+      this.setState({newTodoDescription: ''});
+      this.getUsersAxios();
+      //without this line... the page would need to be manually refreshed.
+      //this line is causing the page to be remounted... 
+      //there is a more efficient way to do this
+      this.props.history.push(`/users/${newUser.data._id}`);
+    });
+  }
+
+  toggleDone = event => {
+    event.preventDefault();
+    let todoId = event.target.getAttribute('data-todo-id');
+    axios({
+      method: "PUT",
+      url: `${backendUrl}${event.target.id}/update-todo/${todoId}`,
+    }).then(user => {
+      this.getUsersAxios();
+      this.props.history.push(`/users/${user.data._id}`)
+    });
+  };
+
 
   render() {
     return (
@@ -91,7 +127,11 @@ class App extends React.Component {
           <Route
             path='/users/:id'
             render={routerProps => (
-              <UserDetail {...routerProps} users={this.state.users} />
+              <UserDetail {...routerProps} users={this.state.users}
+              newTodoDescription={this.state.newTodoDescription}
+              handleChange={this.handleChange}
+              handleNewTodoSubmit={this.handleNewTodoSubmit} 
+              toggleDone={this.toggleDone}/>
             )}
           />
           <Route
